@@ -27,6 +27,11 @@ namespace HPlusSport.API.Controllers
         {
             IQueryable<Product> products = _context.Products;
 
+            if (!string.IsNullOrWhiteSpace(modifier.Name))
+            {
+                products = products.Where(p => p.Name.ToLower().Contains(modifier.Name.ToLower()));
+            }
+
             if (modifier.MaxPrice != null && modifier.MinPrice != null)
             {
                 products = products.Where(p => p.Price >= modifier.MinPrice && p.Price <= modifier.MaxPrice);
