@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HPlusSport.API.HelperClasses;
 using HPlusSport.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,9 +23,13 @@ namespace HPlusSport.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts()
+        public async Task<IActionResult> GetProducts([FromQuery] PageSizeModifiers pageSizeModifiers)
         {
-            var products = await _context.Products.ToArrayAsync();
+
+            var products = await _context.Products
+                .Skip(pageSizeModifiers.Size * (pageSizeModifiers.PageNumber - 1))
+                .Take(pageSizeModifiers.Size)
+                .ToArrayAsync();
 
             return Ok(products);
         }
