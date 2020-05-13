@@ -23,15 +23,29 @@ namespace HPlusSport.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts([FromQuery] PageSizeModifiers pageSizeModifiers)
+        public async Task<IActionResult> GetProducts([FromQuery] PriceFilter modifier)
         {
+            IQueryable<Product> products = _context.Products;
 
-            var products = await _context.Products
-                .Skip(pageSizeModifiers.Size * (pageSizeModifiers.PageNumber - 1))
-                .Take(pageSizeModifiers.Size)
-                .ToArrayAsync();
+            if (modifier.MaxPrice != null && modifier.MinPrice != null)
+            {
+                products = products.Where(p => p.Price >= modifier.MinPrice && p.Price <= modifier.MaxPrice);
+            }
 
-            return Ok(products);
+            else if (modifier.MinPrice != null)
+            {
+                products = products.Where(p => p.Price >= modifier.MinPrice);
+            }
+            else if (modifier.MaxPrice != null)
+            {
+                products = products.Where(p => p.Price <= modifier.MaxPrice);
+            }
+
+            products = products
+                .Skip(modifier.Size * (modifier.PageNumber - 1))
+                .Take(modifier.Size);
+
+            return Ok(await products.ToArrayAsync());
         }
 
         [HttpGet("{id:int}")]
