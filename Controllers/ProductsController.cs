@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using HPlusSport.API.HelperClasses;
@@ -23,7 +25,7 @@ namespace HPlusSport.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts([FromQuery] PriceFilter modifier)
+        public async Task<IActionResult> GetAllProducts([FromQuery] PriceFilter modifier)
         {
             IQueryable<Product> products = _context.Products;
 
@@ -62,6 +64,54 @@ namespace HPlusSport.API.Controllers
                 return NotFound();
 
             return Ok(product);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Product>> PostProduct([FromBody] Product product)
+        {
+            _context.Add<Product>(product);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+        }
+
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> PutProduct([FromRoute] int id, [FromBody] Product product)
+        {
+            if (id != product.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(product).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return NotFound("Product does not exist in the database");
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Product>> DeleteProduct([FromRoute] int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound("Product does not exist");
+            }
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+
+            return product;
         }
     }
 }
