@@ -5,7 +5,7 @@ namespace HPlusSport.API.HelperClasses
     public class PageModifier
     {
 
-        private const int MaxSizePerPage = 25;
+        private const int MaxSizePerPage = 50;
 
         private int _defaultSizePerPage = 15;
 

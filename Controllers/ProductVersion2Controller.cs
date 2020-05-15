@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using HPlusSport.API.HelperClasses;
 using HPlusSport.API.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +9,7 @@ namespace HPlusSport.API.Controllers
 {
     //this is a new api version that gets only products that are in stock
     [ApiVersion("2.0")]
-    [Route("api/products")]
+    [Route("products")]
     [ApiController]
     public class ProductVersion2Controller : ControllerBase
     {
