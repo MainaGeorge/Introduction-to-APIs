@@ -2,11 +2,13 @@ using HPlusSport.API.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace HPlusSport.API
 {
@@ -36,6 +38,12 @@ namespace HPlusSport.API
                 options.ApiVersionReader = new HeaderApiVersionReader("X-API-Version");
             });
 
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo() { Title = "Version Uno", Version = "v1.0" });
+            });
+
             services.AddDbContext<ShopContext>(options => options.UseInMemoryDatabase("Shop"));
         }
 
@@ -48,6 +56,15 @@ namespace HPlusSport.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+
+            });
 
             app.UseRouting();
 
