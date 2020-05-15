@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using HPlusSport.API.HelperClasses;
 using HPlusSport.API.Models;
@@ -10,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HPlusSport.API.Controllers
 {
+    [ApiVersion("1.0")]
     [Route("[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -55,6 +53,7 @@ namespace HPlusSport.API.Controllers
             return Ok(await products.ToArrayAsync());
         }
 
+
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetProduct(int id)
         {
@@ -69,7 +68,7 @@ namespace HPlusSport.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct([FromBody] Product product)
         {
-            _context.Add<Product>(product);
+            _context.Add(product);
 
             await _context.SaveChangesAsync();
 
@@ -114,4 +113,6 @@ namespace HPlusSport.API.Controllers
             return product;
         }
     }
+
+
 }
